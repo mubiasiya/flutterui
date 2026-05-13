@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutterui/button.dart';
+import 'package:flutterui/popup.dart';
 import 'package:flutterui/registration.dart';
 import 'package:flutterui/textfield.dart';
 import 'package:flutterui/heading.dart';
@@ -39,6 +40,24 @@ class _MyHomePageState extends State<MyHomePage> {
 
   bool obscuretext = true;
 
+  final _formKey = GlobalKey<FormState>();
+
+   void validateform() {
+    if (_formKey.currentState!.validate()) {
+      showPopup("Login Successful!", context);
+    } else {
+      showPopup("Please fix the errors in the form.", context);
+    }
+  }
+
+  void toggle() {
+    setState(() {
+      obscuretext = !obscuretext;
+    });
+  }
+
+
+
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
 
@@ -71,105 +90,93 @@ class _MyHomePageState extends State<MyHomePage> {
                       height: 100,
                       width: 100,
                     ),
-                    SizedBox(width: screenWidth*0.1),
+                    SizedBox(width: screenWidth * 0.1),
                     heading('LOGIN PAGE'),
                   ],
                 ),
               ),
               SizedBox(height: 70),
               Padding(
-                padding:  EdgeInsets.only(left: screenWidth*0.1, right:  screenWidth * 0.1,
+                padding: EdgeInsets.only(
+                  left: screenWidth * 0.1,
+                  right: screenWidth * 0.1,
                 ),
-                child: Column(
-                  children: [
-                    buildTextfield(
-                      label: 'Email',
-                      hint: 'Enter email',
-                      icon: Icons.email,
-                      keyboardType: TextInputType.emailAddress,
-                    ),
-                    SizedBox(height: 20),
-                    TextField(
-                      keyboardType: TextInputType.numberWithOptions(),
-                      obscureText: obscuretext,
-                      decoration: InputDecoration(
-                        label: Text('Password'),
-                        prefixIcon: Icon(Icons.password),
-                        prefixIconColor: Colors.black,
-                        hintText: 'Enter password',
-                        fillColor: Colors.white,
-                        filled: true,
-                        suffixIcon: IconButton(
-                          onPressed: () {
-                            setState(() {
-                              obscuretext = !obscuretext;
-                            });
-                          },
-                          icon:
-                              obscuretext
-                                  ? Icon(
-                                    Icons.visibility_off,
-                                    color: Colors.black,
-                                  )
-                                  : Icon(Icons.visibility, color: Colors.black),
-                        ),
-                        border: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.black),
-                        ),
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    children: [
+                      buildTextfield(
+                        label: 'Email',
+                        hint: 'Enter email',
+                        icon: Icons.email,
+                        keyboardType: TextInputType.emailAddress,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Email is required';
+                          }
+                          String pattern =
+                              r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+";
+                          RegExp regExp = RegExp(pattern);
+
+                          if (!regExp.hasMatch(value)) {
+                            return 'Please enter a valid email address (e.g., name@email.com)';
+                          }
+                          return null;
+                        },
                       ),
-                    ),
-                    SizedBox(height: 10),
-                    Row(
-                      children: [
-                      
-                        Spacer(),
-                        TextButton(
-                          onPressed: () {},
-                          child: Text(
-                            'Forgot password ',
-                            style: TextStyle(
-                              color: const Color.fromARGB(255, 12, 71, 173),
+                      SizedBox(height: 20),
+                      passwordfield(obscuretext: obscuretext, onIconTap: toggle,
+                      ),
+                      SizedBox(height: 10),
+                      Row(
+                        children: [
+                          Spacer(),
+                          TextButton(
+                            onPressed: () {},
+                            child: Text(
+                              'Forgot password ',
+                              style: TextStyle(
+                                color: const Color.fromARGB(255, 12, 71, 173),
+                              ),
                             ),
                           ),
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 60),
-                    elevbutton('LOGIN'),
-                    SizedBox(height: 20),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                       
-                        Flexible(
-                          child: Row(
-                             mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              Text(
-                                'Dont have account ? ',
-                                style: TextStyle(color: Colors.black,),
-                              ),
-                              TextButton(
-                                onPressed: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => Registration(),
-                                    ),
-                                  );
-                                },
-                                child: Text(
-                                  'Sign up ',
+                        ],
+                      ),
+                      SizedBox(height: 60),
+                      elevbutton('LOGIN',validateform),
+                      SizedBox(height: 20),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Flexible(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                Text(
+                                  'Dont have account ? ',
                                   style: TextStyle(color: Colors.black),
                                 ),
-                              ),
-                            ],
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => Registration(),
+                                      ),
+                                    );
+                                  },
+                                  child: Text(
+                                    'Sign up ',
+                                    style: TextStyle(color: Colors.black),
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                        
-                      ],
-                    ),
-                  ],
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ],
