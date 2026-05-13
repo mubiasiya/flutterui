@@ -33,7 +33,7 @@ class Registration extends StatelessWidget {
             children: [
               SizedBox(height: 30),
               heading('SIGN-UP PAGE '),
-        
+
               SizedBox(height: 70),
               Padding(
                 padding: EdgeInsets.only(
@@ -68,7 +68,7 @@ class Registration extends StatelessWidget {
                           String pattern =
                               r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+";
                           RegExp regExp = RegExp(pattern);
-        
+
                           if (!regExp.hasMatch(value)) {
                             return 'Please enter a valid email address (e.g., name@email.com)';
                           }
@@ -84,9 +84,9 @@ class Registration extends StatelessWidget {
                           if (value == null || value.isEmpty) {
                             return 'Phone is required';
                           }
-                          String pattern = r"^[1-9]\d{9}";
+                          String pattern = r"^[1-9]\d{9,}";
                           RegExp regExp = RegExp(pattern);
-        
+
                           if (!regExp.hasMatch(value)) {
                             return 'Please enter a valid phone number';
                           }
@@ -103,11 +103,11 @@ class Registration extends StatelessWidget {
                           if (value == null || value.isEmpty) {
                             return 'Password is required';
                           }
-        
+
                           if (value.length < 6) {
                             return 'Password must be at least 6 characters';
                           }
-        
+
                           return null;
                         },
                       ),
@@ -120,7 +120,7 @@ class Registration extends StatelessWidget {
                         validator: (value) {
                           if (value == null || value.isEmpty)
                             return 'Please confirm your password';
-        
+
                           if (value != _passController.text) {
                             return 'Passwords do not match';
                           }
@@ -128,11 +128,11 @@ class Registration extends StatelessWidget {
                         },
                       ),
                       SizedBox(height: 10),
-        
+
                       SizedBox(height: 60),
-                      elevbutton('SIGN UP', validateform),
+                      elevbutton('SIGN UP', validateform,false),
                       SizedBox(height: 20),
-        
+
                       Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [

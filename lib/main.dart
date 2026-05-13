@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutterui/button.dart';
+import 'package:flutterui/homepage.dart';
 import 'package:flutterui/popup.dart';
 import 'package:flutterui/registration.dart';
 import 'package:flutterui/textfield.dart';
@@ -42,9 +43,23 @@ class _MyHomePageState extends State<MyHomePage> {
 
   final _formKey = GlobalKey<FormState>();
 
-   void validateform() {
+  bool isloading = false;
+
+  void validateform() async {
     if (_formKey.currentState!.validate()) {
-      showPopup("Login Successful!", context);
+      // showPopup("Login Successful!", context);
+      setState(() {
+        isloading = true;
+      });
+      await Future.delayed(const Duration(seconds: 2));
+
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => Home()),
+      );
+      setState(() {
+        isloading = false;
+      });
     } else {
       showPopup("Please fix the errors in the form.", context);
     }
@@ -55,8 +70,6 @@ class _MyHomePageState extends State<MyHomePage> {
       obscuretext = !obscuretext;
     });
   }
-
-
 
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
@@ -125,7 +138,9 @@ class _MyHomePageState extends State<MyHomePage> {
                         },
                       ),
                       SizedBox(height: 20),
-                      passwordfield(obscuretext: obscuretext, onIconTap: toggle,
+                      passwordfield(
+                        obscuretext: obscuretext,
+                        onIconTap: toggle,
                       ),
                       SizedBox(height: 10),
                       Row(
@@ -143,7 +158,11 @@ class _MyHomePageState extends State<MyHomePage> {
                         ],
                       ),
                       SizedBox(height: 60),
-                      elevbutton('LOGIN',validateform),
+                      elevbutton(
+                        'LOGIN',
+                        isloading ? () {} : validateform,
+                        isloading,
+                      ),
                       SizedBox(height: 20),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.end,
